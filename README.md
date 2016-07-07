@@ -4,6 +4,9 @@
 
 <b>Master bioinformatics software and computational approaches in modern biology<b/>
 
+
+
+
 How do we sequence and compare genomes? How do we identify the genetic basis for disease? How do we construct an evolutionary Tree of Life for all species on Earth?
 
 When you complete this Specialization, you will learn how to answer many questions in modern biology that have become inseparable from the computational approaches used to solve them. You will also possess a toolkit of existing software resources that are built upon these computational approaches and that are used in practice by thousands of biologists every day in one of the fastest growing fields in science.
