@@ -1,9 +1,11 @@
-# UCSD Biology Meets Programming: Bioinformatics for Beginners
+# UCSD Bioinformatics Specialization 
 
-Are you interested in learning how to program (in Python) within a scientific setting?
+Journey to the Frontier of Computational Biology
 
-This course will cover algorithms for solving various biological problems along with a handful of programming challenges helping you implement these algorithms in Python.  It offers a gently-paced introduction to our Bioinformatics Specialization (https://www.coursera.org/specializations/bioinformatics), preparing learners to take the first course in the Specialization, "Finding Hidden Messages in DNA" (https://www.coursera.org/learn/dna-analysis).
+Master bioinformatics software and computational approaches in modern biology
 
-Each of the four weeks in the course will consist of two required components.  First, an interactive textbook provides Python programming challenges that arise from real biological problems.  If you haven't programmed in Python before, not to worry! We provide "Just-in-Time" exercises from the Codecademy Python track (https://www.codecademy.com/learn/python). And each page in our interactive textbook has its own discussion forum, where you can interact with other learners. Second, each week will culminate in a summary quiz.
+How do we sequence and compare genomes? How do we identify the genetic basis for disease? How do we construct an evolutionary Tree of Life for all species on Earth?
 
-Lecture videos are also provided that accompany the material, but these videos are optional.
+When you complete this Specialization, you will learn how to answer many questions in modern biology that have become inseparable from the computational approaches used to solve them. You will also possess a toolkit of existing software resources that are built upon these computational approaches and that are used in practice by thousands of biologists every day in one of the fastest growing fields in science.
+
+Although this Specialization centers on computational topics, you do not need to know how to program in order to complete it. If you are interested in programming, we feature an "Honors Track" (called "hacker track" in previous runs of the course). The Honors Track allows you to implement the bioinformatics algorithms that you will encounter along the way in dozens of automatically graded coding challenges. By completing the Honors Track, you will be a true bioinformatics software professional! :)
