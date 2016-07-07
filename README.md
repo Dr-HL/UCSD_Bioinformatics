@@ -2,10 +2,7 @@
 
 <b>Journey to the Frontier of Computational Biology</b>
 
-<b>Master bioinformatics software and computational approaches in modern biology<b/>
-
-
-
+<i>Master bioinformatics software and computational approaches in modern biology</i>
 
 How do we sequence and compare genomes? How do we identify the genetic basis for disease? How do we construct an evolutionary Tree of Life for all species on Earth?
 
