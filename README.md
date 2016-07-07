@@ -1,8 +1,8 @@
 # UCSD Bioinformatics Specialization 
 
-Journey to the Frontier of Computational Biology
+<b>Journey to the Frontier of Computational Biology</b>
 
-Master bioinformatics software and computational approaches in modern biology
+<b>Master bioinformatics software and computational approaches in modern biology<b/>
 
 How do we sequence and compare genomes? How do we identify the genetic basis for disease? How do we construct an evolutionary Tree of Life for all species on Earth?
 
