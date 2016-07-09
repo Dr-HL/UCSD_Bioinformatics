@@ -32,9 +32,34 @@ ex with k = 2: AA AC AG AT CA CC CG CT GA GC GG GT TA TC TG TT
 base4(pattern) 00 01 02 03 10 11 12 13 20 21 22 23 30 31 32 33
 base10(index)  0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15
 
-Code Challenge: Implement PatternToIndex
+Code Challenge: Implement PatternToFrequencyIndex
      Input: A DNA string Pattern
      ex: AGT
-     Output: The integer PatternToIndex(Pattern)
+     Output: The frequency index for the genome
      ex: 11
 """
+
+def DNAToIndex(Letter):
+    if Letter == 'A':
+        return 0
+    elif Letter == 'C':
+        return 1
+    elif Letter == 'G':
+        return 2
+    elif Letter == 'T':
+        return 3
+    else:
+        return "INVALID"
+
+def PatternToFrequencyIndex(Pattern):
+    Base10 = 0
+    PatternInput = list(Pattern)
+    PatternToBase4 = []
+    for Letter in PatternInput:
+        PatternToBase4.append(DNAToIndex(Letter))
+    PatternToBase4.reverse()
+    for index, value in enumerate(PatternToBase4):
+        Base10 += value * 4**index
+    return Base10
+
+# print(PatternToFrequencyIndex('CCAGA'))
