@@ -62,4 +62,4 @@ def PatternToFrequencyIndex(Pattern):
         Base10 += value * 4**index
     return Base10
 
-# print(PatternToFrequencyIndex('CCAGA'))
+print(PatternToFrequencyIndex('CCAGA'))
