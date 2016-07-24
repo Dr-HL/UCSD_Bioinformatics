@@ -134,8 +134,8 @@ def ReverseComplement(Pattern):
     # return reversed compliment string
     return revComp
 
-Pattern = 'GATTACA'
-print(ReverseComplement(Pattern))
+#Pattern = 'GATTACA'
+#print(ReverseComplement(Pattern))
 
 """
 However, before concluding that we have found the DnaA box of Vibrio cholerae,
@@ -170,3 +170,70 @@ def PatternMatching(Pattern, Genome):
 #input_file = open("input.txt")
 #Genome = input_file.read()
 #print(PatternMatching(Pattern, Genome))
+
+"""
+Although most bacteria have circular genomes, we have thus far assumed that
+genomes were linear, a reasonable simplifying assumption because the length of
+the window is much shorter than the length of the genome. This time, because we
+are sliding a giant window, we should account for windows that “wrap around” the
+end of Genome. To do so, we will define a string ExtendedGenome as Genome+Genome[0:n//2]
+"""
+def SymbolArray(Genome, symbol):
+    array = {}
+    n = len(Genome)
+    ExtendedGenome = Genome + Genome[0:n//2]
+    print(ExtendedGenome)
+    for i in range(n):
+        array[i] = PatternCount(symbol, ExtendedGenome[i:i+(n//2)])
+    return array
+
+Genome = "GATATATGCATATACTT"
+# ExtendedGenome = GATATATGCATATACTTGATATATG
+symbol = "C"
+# print(SymbolArray(Genome, symbol))
+
+"""
+We observe that when we slide a window one symbol to the right, the number of
+occurrences of symbol in the window does not change much, and so regenerating
+the entire array from scratch is inefficient
+
+We can view this sliding of the window as simply removing the first symbol from
+the window (C) and adding a new symbol to the end (A). Thus, when shifting the
+window right by one symbol, the number of occurrences of C in the window decreased
+by 1 and increased by 0. Once we compute that array[0] is equal to 8, we automatically
+know that array[1] is equal to 7 because the next symbol A does not equal C.
+
+Input:  Strings Text and Pattern
+Output: The number of times Pattern appears in Text
+"""
+
+def FasterSymbolArray(Genome, symbol):
+    array = {}
+    n = len(Genome)                                     # n = 8
+    ExtendedGenome = Genome + Genome[0:n//2]            # ExtendedGenome = AAAAGGGGAAAA
+    array[0] = PatternCount(symbol, Genome[0:n//2])     # {0: 4}
+    for i in range(1, n):                               # from 1 up to but not including 8
+        array[i] = array[i-1]                           # array[1] = array[0] so array[1] = {0: 4}
+        # if previous index matches symbol, subtract one
+        if ExtendedGenome[i-1] == symbol:               # if ExtendedGenome[0] == A
+            array[i] = array[i]-1                           # array[1] = 4 - 1 = 3 so array[1] = {0: 3}
+        # if next index matches symbol, add one
+        if ExtendedGenome[i+(n//2)-1] == symbol:        # if ExtendedGenome[4] == A
+            array[i] = array[i]+1                           # array[1] = {0: 4}
+    return array
+
+Genome = "AAAAGGGG"
+symbol = "A"
+print(FasterSymbolArray(Genome, symbol))
+
+"""
+Every time we encounter a G, Skew[i] is equal to Skew[i-1]+1
+Every time we encounter a C, Skew[i] is equal to Skew[i-1]-1
+Otherwise, Skew[i] is equal to Skew[i-1]
+"""
+
+def Skew(Genome):
+    skew = {}
+    n = len(Genome)
+
+# print(Skew("CATGGGCATCGGCCATACGCC"))
