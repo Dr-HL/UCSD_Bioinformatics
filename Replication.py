@@ -272,7 +272,7 @@ def MinimumSkew(Genome):
             positions.append(i)
     return positions
 
-# Genome = "TAAAGACTGCCGAGAGGCCAACACGAGTGCTAGAACGAGGGGCGTAAACGCGGGTCCGAT"
+# Genome = "GATACACTTCCCGAGTAGGTACTG"
 # print(MinimumSkew(Genome))
 
 """
@@ -294,9 +294,9 @@ def HammingDistance(p, q):
             count += 1
     return count
 
-# p = "GGGCCGTTGGT"
-# q = "GGACCGTTGAC"
-# print(HammingDistance(p, q))
+#p = "TGACCCGTTATGCTCGAGTTCGGTCAGAGCGTCATTGCGAGTAGTCGTTTGCTTTCTCAAACTCC"
+#q = "GAGCGATTAAGCGTGACAGCCCCAGGGAACCCACAAAACGTGATCGCAGTCCATCCGATCATACA"
+#print(HammingDistance(p, q))
 
 """"
 Approximate Pattern Matching Problem:  Find all approximate occurrences of a pattern in a string.
