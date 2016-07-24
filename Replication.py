@@ -158,7 +158,8 @@ def PatternMatching(Pattern, Genome):
     positions = []
     # determine index value we can stop checking for pattern
     for i in range(len(Genome)-len(Pattern)+1):
-        # if we find the pattern within the genome, append starting position of pattern to positions list
+        # if we find the pattern within the genome, append starting position of
+        # pattern to positions list
         if Genome[i:i+len(Pattern)] == Pattern:
             positions.append(i)
     result = ' '.join(str(number) for number in positions)
@@ -187,9 +188,9 @@ def SymbolArray(Genome, symbol):
         array[i] = PatternCount(symbol, ExtendedGenome[i:i+(n//2)])
     return array
 
-Genome = "GATATATGCATATACTT"
+# Genome = "GATATATGCATATACTT"
 # ExtendedGenome = GATATATGCATATACTTGATATATG
-symbol = "C"
+# symbol = "C"
 # print(SymbolArray(Genome, symbol))
 
 """
@@ -222,11 +223,15 @@ def FasterSymbolArray(Genome, symbol):
             array[i] = array[i]+1                           # array[1] = {0: 4}
     return array
 
-Genome = "AAAAGGGG"
-symbol = "A"
-print(FasterSymbolArray(Genome, symbol))
+# Genome = "AAAAGGGG"
+# symbol = "A"
+# print(FasterSymbolArray(Genome, symbol))
 
 """
+We will keep track of the difference between the total number of occurrences of G
+and the total number of occurrences of C that we have encountered so far in
+Genome by using a skew array
+
 Every time we encounter a G, Skew[i] is equal to Skew[i-1]+1
 Every time we encounter a C, Skew[i] is equal to Skew[i-1]-1
 Otherwise, Skew[i] is equal to Skew[i-1]
@@ -235,5 +240,94 @@ Otherwise, Skew[i] is equal to Skew[i-1]
 def Skew(Genome):
     skew = {}
     n = len(Genome)
+    skew[0] = 0
+    for i in range(1, n + 1):
+        skew[i] = skew[i-1]
+        if Genome[i - 1] == 'C':
+            skew[i] = skew[i] - 1
+        elif Genome[i - 1] == 'G':
+            skew[i] = skew[i] + 1
+    return skew
 
-# print(Skew("CATGGGCATCGGCCATACGCC"))
+# Genome = "TAAAGACTGCCGAGAGGCCAACACGAGTGCTAGAACGAGGGGCGTAAACGCGGGTCCGAT"
+# print(Skew(Genome))
+
+"""
+Minimum Skew Problem:  Find a position in a genome where the skew diagram attains a minimum.
+ Input: A DNA string Genome. 
+ ex: TAAAGACTGCCGAGAGGCCAACACGAGTGCTAGAACGAGGGGCGTAAACGCGGGTCCGAT
+ Output: All integer(s) i minimizing Skew[i] among all values of i (from 0 to len(Genome)).
+ ex: 11 24
+"""
+def MinimumSkew(Genome):
+    positions = []
+    skew = Skew(Genome)
+    n = len(Genome)
+    minimum = 0
+    for i in range(0, n + 1):
+        if skew[i] < minimum:
+            minimum = skew[i]
+    for i in range(0, n + 1):
+        if skew[i] == minimum:
+            positions.append(i)
+    return positions
+
+# Genome = "TAAAGACTGCCGAGAGGCCAACACGAGTGCTAGAACGAGGGGCGTAAACGCGGGTCCGAT"
+# print(MinimumSkew(Genome))
+
+"""
+The discovery of these approximate 9-mers makes sense biologically, since DnaA
+can bind not only to “perfect” DnaA boxes but to their slight modifications as well
+
+Hamming distance = the total number of mismatches between the 2 strings
+
+Hamming Distance Problem:  Compute the Hamming distance between two strings.
+ Input: Two strings of equal length.
+  Output: The Hamming distance between these strings.
+"""
+
+def HammingDistance(p, q):
+    count = 0
+    n = len(p)
+    for i in range(0, n):
+        if p[i] != q[i]:
+            count += 1
+    return count
+
+# p = "GGGCCGTTGGT"
+# q = "GGACCGTTGAC"
+# print(HammingDistance(p, q))
+
+""""
+Approximate Pattern Matching Problem:  Find all approximate occurrences of a pattern in a string.
+    Input: Strings Pattern and Text along with an integer d
+    Output: All starting positions where Pattern appears as a substring of Text
+    with at most d mismatches
+"""
+
+def ApproximatePatternMatching(Pattern, Text, d):
+    # create empty list for result
+    positions = []
+    p = Pattern
+    # determine index value we can stop checking for pattern
+    for i in range(len(Text)-len(Pattern)+1):
+        # if we find the pattern within the genome, append starting position of
+        # pattern to positions list
+        q = Text[i:i+len(Pattern)]
+        if HammingDistance(p, q) <= d:
+            positions.append(i)
+    return positions
+
+# Pattern = "ATTCTGGA"
+# Text = "CGCCCGAATCCAGAACGCATTCCCATATTTCGGGACCACTGGCCTCCACGGTACGGACGTCAATCAAAT"
+# d = 3
+# print(ApproximatePatternMatching(Pattern, Text, d))
+
+def ApproximatePatternCount(Pattern, Text, d):
+    count = len(ApproximatePatternMatching(Pattern, Text, d))
+    return count
+
+# Pattern = "GAGG"
+# Text = "TTTAGAGCCTTCAGAGG"
+# d = 2
+# print(ApproximatePatternCount(Pattern, Text, d))
