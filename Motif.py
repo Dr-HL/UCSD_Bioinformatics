@@ -50,27 +50,18 @@ def Profile(Motifs):
     t = len(Motifs)
     k = len(Motifs[0])
     profile = {}
-    # create profile dictionary like we created count dictionary above
-    for symbol in "ACGT":
-        # each key in the dictionary ("A", "C", "G", "T") will store a list
-        profile[symbol] = []
-        # loop through each letter within the motif string
-        for j in range(k):
-            # create a placeholder for count
-            profile[symbol].append(0)
-
     # create count dictionary
     count = Count(Motifs)
     # loop through count dictionary
     for symbol, array in count.items():
-        print(symbol)
+        # copy count dictionary into profile dictionary
+        profile[symbol] = array
+    # loop through profile dictionary
+    for symbol, array in profile.items():
         print(array)
-        # loop through each list value in dictionary key
         for i in array:
-            print("i",i)
-            print("T",t)
-            # divide count by number of motifs
-            profile[symbol][i] = i / t
+            new_value = i / t
+            profile[symbol] = new_value
     return profile
 
 motif1 = "AACGTA"
