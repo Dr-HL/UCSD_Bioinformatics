@@ -36,8 +36,6 @@ motif2 = "CCCGTT"
 motif3 = "CACCTT"
 motif4 = "GGATTA"
 motif5 = "TTCCGG"
-motifs = [motif1, motif2, motif3, motif4, motif5]
-# print(motifs)
 
 # print(Count(motifs))
 
@@ -50,18 +48,11 @@ def Profile(Motifs):
     t = len(Motifs)
     k = len(Motifs[0])
     profile = {}
-    # create count dictionary
     count = Count(Motifs)
-    # loop through count dictionary
-    for symbol, array in count.items():
-        # copy count dictionary into profile dictionary
-        profile[symbol] = array
-    # loop through profile dictionary
-    for symbol, array in profile.items():
-        print(array)
-        for i in array:
-            new_value = i / t
-            profile[symbol] = new_value
+    for key, motif_lists in sorted(count.items()):
+        profile[key] = motif_lists
+        for motif_list, number in enumerate(motif_lists):
+            motif_lists[motif_list] = number/t
     return profile
 
 motif1 = "AACGTA"
@@ -71,4 +62,34 @@ motif4 = "GGATTA"
 motif5 = "TTCCGG"
 motifs = [motif1, motif2, motif3, motif4, motif5]
 
-print(Profile(motifs))
+# print(Profile(motifs))
+
+"""
+The letter that occurs most often in the matrix column will be deemed the consensus letter
+The consensus letter for each column will form the consensus string
+"""
+
+# Input:  A set of kmers Motifs
+# Output: A consensus string of Motifs.
+def Consensus(Motifs):
+    k = len(Motifs[0])
+    profile = Profile(Motifs)
+    consensus = ""
+    for j in range(k):
+        maximum = 0
+        frequentSymbol = ""
+        for symbol in "ACGT":
+            if profile[symbol][j] > maximum:
+                maximum = profile[symbol][j]
+                frequentSymbol = symbol
+        consensus += frequentSymbol
+    return consensus
+
+print(Consensus(motifs))
+
+motif1 = "AACGTA"
+motif2 = "CCCGTT"
+motif3 = "CACCTT"
+motif4 = "GGATTA"
+motif5 = "TTCCGG"
+motifs = [motif1, motif2, motif3, motif4, motif5]
