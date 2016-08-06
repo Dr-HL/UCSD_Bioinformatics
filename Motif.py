@@ -55,14 +55,14 @@ def Profile(Motifs):
             motif_lists[motif_list] = number/t
     return profile
 
-motif1 = "AACGTA"
-motif2 = "CCCGTT"
-motif3 = "CACCTT"
-motif4 = "GGATTA"
-motif5 = "TTCCGG"
-motifs = [motif1, motif2, motif3, motif4, motif5]
+# motif1 = "AACGTA"
+# motif2 = "CCCGTT"
+# motif3 = "CACCTT"
+# motif4 = "GGATTA"
+# motif5 = "TTCCGG"
+# motifs = [motif1, motif2, motif3, motif4, motif5]
 
-# print(Profile(motifs))
+#print(Profile(motifs))
 
 """
 The letter that occurs most often in the matrix column will be deemed the consensus letter
@@ -85,7 +85,22 @@ def Consensus(Motifs):
         consensus += frequentSymbol
     return consensus
 
-print(Consensus(motifs))
+#print(Consensus(motifs))
+
+"""
+Loop through each letter in each motif, and if the letter does not match the
+consensus string, add to score count
+"""
+# Input:  A set of k-mers Motifs
+# Output: The score of these k-mers.
+def Score(Motifs):
+    count = 0
+    consensus = Consensus(Motifs)
+    for motif in Motifs:
+        for index, letter in enumerate(motif):
+            if letter != consensus[index]:
+                count += 1
+    return count
 
 motif1 = "AACGTA"
 motif2 = "CCCGTT"
@@ -93,3 +108,54 @@ motif3 = "CACCTT"
 motif4 = "GGATTA"
 motif5 = "TTCCGG"
 motifs = [motif1, motif2, motif3, motif4, motif5]
+
+#print(Score(motifs))
+
+"""
+The probability that a profile matrix will produce a given string is given by
+the product of individual nucleotide probabilities.
+"""
+# Input:  String Text and profile matrix Profile
+# Output: Probability value
+def Pr(Text, Profile):
+    p = 0
+    # loop through each index(char) in text
+    for index,char in enumerate(Text):
+        for key, profile_lists in sorted(Profile.items()):
+            if char == key:
+                p *= profile_lists[index]
+    return p
+
+# profile = {'A': [0.2, 0.2, 0.0, 0.0, 0.0, 0.0, 0.9, 0.1, 0.1, 0.1, 0.3, 0.0],
+#            'T': [0.1, 0.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.4, 0.1, 0.2, 0.4, 0.6],
+#            'G': [0.0, 0.0, 1.0, 1.0, 0.9, 0.9, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0],
+#            'C': [0.7, 0.2, 0.0, 0.0, 0.1, 0.1, 0.0, 0.5, 0.8, 0.7, 0.3, 0.4]}
+# text = "ACGGGGATTACC"
+
+#print(Pr(text, profile))
+
+# Input:  String Text, an integer k, and profile matrix Profile
+# Output: String of most probable pattern
+def ProfileMostProbablePattern(Text, k, Profile):
+    n = len(Text)
+    maximum = 0
+    probable_pattern = ''
+    for i, letter in enumerate(Text):
+        pattern = Text[i:i+k]
+        probability = Pr(pattern,Profile)
+        if (probability > maximum) and (len(pattern) >= 5):
+            maximum = probability
+            probable_pattern = pattern
+    if maximum == 0:
+        return Text[0:k]
+    else:
+        return probable_pattern
+
+k = 5
+profile = {'A': [0.2, 0.2, 0.3, 0.2, 0.3],
+           'C': [0.4, 0.3, 0.1, 0.5, 0.1],
+           'G': [0.3, 0.3, 0.5, 0.2, 0.4],
+           'T': [0.1, 0.2, 0.1, 0.1, 0.2]}
+text = "ACCTGTTTATTGCCTAAGTTCCGAACAAACCCAATATAGCCCGAGGGCCT"
+
+print(ProfileMostProbablePattern(text, k, profile))
