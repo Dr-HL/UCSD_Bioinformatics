@@ -85,6 +85,18 @@ def Consensus(Motifs):
         consensus += frequentSymbol
     return consensus
 
+profile = {'A': [0.4, 0.3, 0.0, 0.1, 0.0, 0.9],
+           'C': [0.2, 0.3, 0.0, 0.4, 0.0, 0.1],
+           'G': [0.1, 0.3, 1.0, 0.1, 0.5, 0.0],
+           'T': [0.3, 0.1, 0.0, 0.4, 0.5, 0.0]}
+
+
+# profile = {'A': [0.2, 0.2, 0.0, 0.0, 0.0, 0.0, 0.9, 0.1, 0.1, 0.1, 0.3, 0.0],
+#            'T': [0.1, 0.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.4, 0.1, 0.2, 0.4, 0.6],
+#            'G': [0.0, 0.0, 1.0, 1.0, 0.9, 0.9, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0],
+#            'C': [0.7, 0.2, 0.0, 0.0, 0.1, 0.1, 0.0, 0.5, 0.8, 0.7, 0.3, 0.4]}
+# text = "ACGGGGATTACC"
+
 #print(Consensus(motifs))
 
 """
@@ -102,14 +114,14 @@ def Score(Motifs):
                 count += 1
     return count
 
-motif1 = "AACGTA"
-motif2 = "CCCGTT"
-motif3 = "CACCTT"
-motif4 = "GGATTA"
-motif5 = "TTCCGG"
-motifs = [motif1, motif2, motif3, motif4, motif5]
-
-#print(Score(motifs))
+# motif1 = "AACGTA"
+# motif2 = "CCCGTT"
+# motif3 = "CACCTT"
+# motif4 = "GGATTA"
+# motif5 = "TTCCGG"
+# motifs = [motif1, motif2, motif3, motif4, motif5]
+#
+# print(Score(motifs))
 
 """
 The probability that a profile matrix will produce a given string is given by
@@ -118,7 +130,7 @@ the product of individual nucleotide probabilities.
 # Input:  String Text and profile matrix Profile
 # Output: Probability value
 def Pr(Text, Profile):
-    p = 0
+    p = 1
     # loop through each index(char) in text
     for index,char in enumerate(Text):
         for key, profile_lists in sorted(Profile.items()):
@@ -126,36 +138,71 @@ def Pr(Text, Profile):
                 p *= profile_lists[index]
     return p
 
-# profile = {'A': [0.2, 0.2, 0.0, 0.0, 0.0, 0.0, 0.9, 0.1, 0.1, 0.1, 0.3, 0.0],
-#            'T': [0.1, 0.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.4, 0.1, 0.2, 0.4, 0.6],
-#            'G': [0.0, 0.0, 1.0, 1.0, 0.9, 0.9, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0],
-#            'C': [0.7, 0.2, 0.0, 0.0, 0.1, 0.1, 0.0, 0.5, 0.8, 0.7, 0.3, 0.4]}
-# text = "ACGGGGATTACC"
+# profile = {'A': [0.4, 0.3, 0.0, 0.1, 0.0, 0.9],
+#            'C': [0.2, 0.3, 0.0, 0.4, 0.0, 0.1],
+#            'G': [0.1, 0.3, 1.0, 0.1, 0.5, 0.0],
+#            'T': [0.3, 0.1, 0.0, 0.4, 0.5, 0.0]}
+# text = "CAGTGA"
+#
+# print(Pr(text, profile))
 
-#print(Pr(text, profile))
+"""
+Check the probability of each k-mer in the DNA string.  Return the k-mer with the
+great probability.
+"""
 
 # Input:  String Text, an integer k, and profile matrix Profile
 # Output: String of most probable pattern
 def ProfileMostProbablePattern(Text, k, Profile):
     n = len(Text)
-    maximum = 0
+    maximum = -1
     probable_pattern = ''
     for i, letter in enumerate(Text):
-        pattern = Text[i:i+k]
-        probability = Pr(pattern,Profile)
-        if (probability > maximum) and (len(pattern) >= 5):
-            maximum = probability
-            probable_pattern = pattern
-    if maximum == 0:
-        return Text[0:k]
+        for i in range(n-k+1):
+            pattern = Text[i:i+k]
+            probability = Pr(pattern,Profile)
+            if (probability > maximum):
+                maximum = probability
+                probable_pattern = pattern
+    if maximum == -1:
+        return Text[0:0+k]
     else:
         return probable_pattern
 
-k = 5
-profile = {'A': [0.2, 0.2, 0.3, 0.2, 0.3],
-           'C': [0.4, 0.3, 0.1, 0.5, 0.1],
-           'G': [0.3, 0.3, 0.5, 0.2, 0.4],
-           'T': [0.1, 0.2, 0.1, 0.1, 0.2]}
-text = "ACCTGTTTATTGCCTAAGTTCCGAACAAACCCAATATAGCCCGAGGGCCT"
+# k = 6
+# profile = {'A': [0.4, 0.3, 0.0, 0.1, 0.0, 0.9],
+#            'C': [0.2, 0.3, 0.0, 0.4, 0.0, 0.1],
+#            'G': [0.1, 0.3, 1.0, 0.1, 0.5, 0.0],
+#            'T': [0.3, 0.1, 0.0, 0.4, 0.5, 0.0]}
+# text = "ACCTGTTTATTGCCTAAGTTCCGAACAAACCCAATATAGCCCGAGGGCCT"
+#
+# print(ProfileMostProbablePattern(text, k, profile))
 
-print(ProfileMostProbablePattern(text, k, profile))
+
+# Input:  A list of kmers Dna, and integers k and t (where t is the number of kmers in Dna)
+# Output: GreedyMotifSearch(Dna, k, t)
+def GreedyMotifSearch(Dna, k, t):
+    BestMotifs = []
+    # search through DNA string
+    for i in range(0, t):
+        # starts by setting BestMotifs equal to the first k-mer from each string in Dna
+        BestMotifs.append(Dna[i][0:k])
+    n = len(Dna[0])
+    # ranges over all possible k-mers in Dna[0], trying each one as Motifs[0]
+    for i in range(n-k+1):
+        Motifs = []
+        Motifs.append(Dna[0][i:i+k])
+        for j in range(1, t):
+            # builds a profile matrix Profile for this lone k-mer, and sets Motifs[1] equal to the Profile-most probable k-mer in Dna[1]
+            P = Profile(Motifs[0:j])
+            # sets Motifs[i] equal to the Profile-most probable k-mer from Dna[i] based on this profile matrix
+            Motifs.append(ProfileMostProbablePattern(Dna[j], k, P))
+        # GreedyMotifSearch checks whether Motifs outscores the current best scoring collection of motifs, BestMotifs
+        if Score(Motifs) < Score(BestMotifs):
+            BestMotifs = Motifs
+    return BestMotifs
+
+# k = 3
+# t = 5
+# Dna = ["GGCGTTCAGGCA", "AAGAATCAGTCA", "CAAGGAGTTCGC", "CACGTCAATCAC", "CAATAATATTCG"]
+# print(GreedyMotifSearch(Dna, k, t))
