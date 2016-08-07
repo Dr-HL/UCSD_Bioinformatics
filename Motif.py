@@ -85,10 +85,10 @@ def Consensus(Motifs):
         consensus += frequentSymbol
     return consensus
 
-profile = {'A': [0.4, 0.3, 0.0, 0.1, 0.0, 0.9],
-           'C': [0.2, 0.3, 0.0, 0.4, 0.0, 0.1],
-           'G': [0.1, 0.3, 1.0, 0.1, 0.5, 0.0],
-           'T': [0.3, 0.1, 0.0, 0.4, 0.5, 0.0]}
+# profile = {'A': [0.4, 0.3, 0.0, 0.1, 0.0, 0.9],
+#            'C': [0.2, 0.3, 0.0, 0.4, 0.0, 0.1],
+#            'G': [0.1, 0.3, 1.0, 0.1, 0.5, 0.0],
+#            'T': [0.3, 0.1, 0.0, 0.4, 0.5, 0.0]}
 
 
 # profile = {'A': [0.2, 0.2, 0.0, 0.0, 0.0, 0.0, 0.9, 0.1, 0.1, 0.1, 0.3, 0.0],
@@ -188,7 +188,6 @@ the game.
 
 GreedyMotifSearch will return the motifs with the highest scores.
 """
-
 # Input:  A list of kmers Dna, and integers k and t (where t is the number of kmers in Dna)
 # Output: GreedyMotifSearch(Dna, k, t)
 def GreedyMotifSearch(Dna, k, t):
@@ -216,66 +215,3 @@ def GreedyMotifSearch(Dna, k, t):
 # t = 5
 # Dna = ["GGCGTTCAGGCA", "AAGAATCAGTCA", "CAAGGAGTTCGC", "CACGTCAATCAC", "CAATAATATTCG"]
 # print(GreedyMotifSearch(Dna, k, t))
-
-"""
-The functions above will return 0 for an entire motif probability even if only
-one of the positions has a 0 probability of existing in the consensus string.
-
-This doesn't make sense because a motif that differs from the consensus string
-at every position will also get a total probability of 0.
-
-In order to improve this unfair scoring, bioinformaticians often substitute zeroes
-with small numbers called pseudocounts.
-"""
-
-# Input:  A set of kmers Motifs
-# Output: CountWithPseudocounts(Motifs)
-def CountWithPseudocounts(Motifs):
-    t = len(Motifs)
-    k = len(Motifs[0])
-    # initializing the count dictionary
-    count = {}
-    # for each letter
-    for symbol in "ACGT":
-        # each key in the dictionary ("A", "C", "G", "T") will store a list
-        count[symbol] = []
-        # loop through each letter within the motif string
-        for j in range(k):
-            # create a placeholder for count
-            count[symbol].append(1)
-    # for each motif
-    for i in range(t):
-        # for each letter in motif
-        for j in range(k):
-            # save the current letter into a variable
-            symbol = Motifs[i][j]
-            # add to total in count dictionary[current letter][char in motif]
-            count[symbol][j] += 1
-    return count
-
-"""
-ProfileWithPseudocounts(Motifs) that takes a list of strings Motifs as input and
-returns the profile matrix of Motifs with pseudocounts as a dictionary of lists
-"""
-
-# Input:  A set of kmers Motifs
-# Output: ProfileWithPseudocounts(Motifs)
-def ProfileWithPseudocounts(Motifs):
-    t = len(Motifs)
-    k = len(Motifs[0])
-    profile = {}
-    count = CountWithPseudocounts(Motifs)
-    for key, motif_lists in sorted(count.items()):
-        profile[key] = motif_lists
-        for motif_list, number in enumerate(motif_lists):
-            motif_lists[motif_list] = number/(float(t+4))
-    return profile
-
-motif1 = "AACGTA"
-motif2 = "CCCGTT"
-motif3 = "CACCTT"
-motif4 = "GGATTA"
-motif5 = "TTCCGG"
-motifs = [motif1, motif2, motif3, motif4, motif5]
-
-print(ProfileWithPseudocounts(motifs))
