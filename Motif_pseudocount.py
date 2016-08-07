@@ -156,7 +156,6 @@ def Pr(Text, Profile):
 def Motifs(Profile, Dnas):
     t = len(Dnas)
     n = len(Dnas[0])
-    k = len(Profile['A'])
     probable_kmer = []
     for Dna in Dnas:
         probable_kmer.append(ProfileMostProbablePattern(Dna, k, Profile))
@@ -182,7 +181,31 @@ def RandomMotifs(Dnas, k, t):
         random_motifs.append(dna[random_start:random_start+k])
     return random_motifs
 
-Dnas = ["TTACCTTAAC", "GATGTCTGTC", "ACGGCGTTAG", "CCCTAACGAG", "CGTCAGAGGT"]
-k = 3
-t = len(Dnas)
-print(RandomMotifs(Dnas, k, t))
+# Dnas = ["TTACCTTAAC", "GATGTCTGTC", "ACGGCGTTAG", "CCCTAACGAG", "CGTCAGAGGT"]
+# k = 3
+# t = len(Dnas)
+# print(RandomMotifs(Dnas, k, t))
+
+# Input:  Positive integers k and t, followed by a list of strings Dna
+# Output: return a list of random kmer motifs
+def RandomizedMotifSearch(Dnas, k, t):
+    while True:
+        M = RandomMotifs(Dnas, k, t)
+        BestMotifs = M
+        Profile = ProfileWithPseudocounts(M)
+        M = Motifs(Profile, Dnas)
+        if Score(M) < Score(BestMotifs):
+            BestMotifs = M
+        else:
+            return BestMotifs
+
+
+
+Dnas = ["CGCCCCTCTCGGGGGTGTTCAGTAAACGGCCA",
+    "GGGCGAGGTATGTGTAAGTGCCAAGGTGCCAG",
+    "TAGTACCGAGACCGAAAGAAGTATACAGGCGT",
+    "TAGATCAAGTTTCAGGTGCACGTCGGTGAACC",
+    "AATCCACCAGCTCCACGTGCAATGTTGGCCTA"]
+k = 8
+t = 5
+print(RandomizedMotifSearch(Dnas, k, t))
