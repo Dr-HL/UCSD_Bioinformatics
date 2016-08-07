@@ -1,3 +1,5 @@
+import random
+
 """
 The functions in Motif.py will return 0 for an entire motif probability even if only
 one of the positions has a 0 probability of existing in the consensus string.
@@ -148,3 +150,39 @@ def Pr(Text, Profile):
 # t = 5
 # Dna = ["GGCGTTCAGGCA", "AAGAATCAGTCA", "CAAGGAGTTCGC", "CACGTCAATCAC", "CAATAATATTCG"]
 # print(GreedyMotifSearchWithPseudocounts(Dna, k, t))
+
+# Input:  A profile matrix Profile and a list of strings Dna
+# Output: Profile-most probable 4-mer from each row of Dna
+def Motifs(Profile, Dnas):
+    t = len(Dnas)
+    n = len(Dnas[0])
+    k = len(Profile['A'])
+    probable_kmer = []
+    for Dna in Dnas:
+        probable_kmer.append(ProfileMostProbablePattern(Dna, k, Profile))
+    return probable_kmer
+
+# Profile = {'A': [0.8, 0.0, 0.0, 0.2],
+#            'C': [0.0, 0.6, 0.2, 0.0],
+#            'G': [0.2, 0.2, 0.8, 0.0],
+#            'T': [0.0, 0.2, 0.0, 0.8]}
+#
+# Dnas = ["TTACCTTAAC", "GATGTCTGTC", "ACGGCGTTAG", "CCCTAACGAG", "CGTCAGAGGT"]
+#
+# print(Motifs(Profile, Dnas))
+
+# Input:  A list of strings Dna, and integers k and t
+# Output: RandomMotifs(Dna, k, t)
+# HINT:   You might not actually need to use t since t = len(Dna), but you may find it convenient
+def RandomMotifs(Dnas, k, t):
+    n = len(Dnas[0])
+    random_motifs = []
+    for dna in Dnas:
+        random_start = random.randint(0,n-k)
+        random_motifs.append(dna[random_start:random_start+k])
+    return random_motifs
+
+Dnas = ["TTACCTTAAC", "GATGTCTGTC", "ACGGCGTTAG", "CCCTAACGAG", "CGTCAGAGGT"]
+k = 3
+t = len(Dnas)
+print(RandomMotifs(Dnas, k, t))

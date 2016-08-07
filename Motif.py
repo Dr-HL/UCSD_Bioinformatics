@@ -31,11 +31,11 @@ def Count(Motifs):
             count[symbol][j] += 1
     return count
 
-motif1 = "AACGTA"
-motif2 = "CCCGTT"
-motif3 = "CACCTT"
-motif4 = "GGATTA"
-motif5 = "TTCCGG"
+# motif1 = "AACGTA"
+# motif2 = "CCCGTT"
+# motif3 = "CACCTT"
+# motif4 = "GGATTA"
+# motif5 = "TTCCGG"
 
 # print(Count(motifs))
 
