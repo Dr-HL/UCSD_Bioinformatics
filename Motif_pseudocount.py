@@ -180,12 +180,13 @@ def RandomMotifs(Dna, k, t):
 def RandomizedMotifSearch(Dna, k, t):
     random_motifs = RandomMotifs(Dna, k, t)
     best_motifs = random_motifs
-    profile = ProfileWithPseudocounts(random_motifs)
-    check_random = Motifs(profile, Dna, k)
-    if Score(check_random) > Score(best_motifs):
-        best_motifs = check_random
-    else:
-        return best_motifs
+    while True:
+        profile = ProfileWithPseudocounts(random_motifs)
+        check_random = Motifs(profile, Dna, k)
+        if Score(check_random) > Score(best_motifs):
+            best_motifs = check_random
+        else:
+            return best_motifs
 #
 # dnas = ["CGCCCCTCTCGGGGGTGTTCAGTAAACGGCCA",
 #     "GGGCGAGGTATGTGTAAGTGCCAAGGTGCCAG",
@@ -242,3 +243,59 @@ def WeightedDie(Probabilities):
 
 # Probabilities = {'AA': 0.2, 'AT': 0.4, 'CC': 0.1, 'GG': 0.1, 'TT': 0.2}
 # print(WeightedDie(Probabilities))
+
+"""
+Now that we can simulate a weighted die roll over a collection of probabilities
+of strings, we need to make this function into a subroutine of a larger function
+that randomly chooses a k-mer from a string Text based on a profile matrix profile
+"""
+
+# Input:  A string Text, a profile matrix Profile, and an integer k
+# Output: ProfileGeneratedString(Text, profile, k)
+def ProfileGeneratedString(Text, profile, k):
+    n = len(Text)
+    probabilities = {}
+    for i in range(0,n-k+1):
+        probabilities[Text[i:i+k]] = Pr(Text[i:i+k], profile)
+    probabilities = Normalize(probabilities)
+    return WeightedDie(probabilities)
+
+"""
+RandomizedMotifSearch may change all t strings in Motifs in a single iteration.
+This strategy may prove reckless, since some correct motifs (captured in Motifs)
+may potentially be discarded at the next iteration.
+
+GibbsSampler is a more cautious iterative algorithm that discards a single k-mer
+from the current set of motifs at each iteration and decides to either keep it
+or replace it with a new one.
+"""
+
+def GibbsSampler(Dna, k, t, N):
+    # randomly select k-mers Motifs = (Motif1, …, Motift) in each string from Dna
+    random_motifs = RandomMotifs(Dna, k, t)
+    # ﻿BestMotifs ← Motifs
+    best_motifs = random_motifs
+    # for j ← 1 to N
+    for j in range(N):
+    #     i ← randomly generated integer between 1 and t
+        i = random.randint(0,t)
+    #     Profile ← profile matrix formed from all strings in random_motifs except for random_motifs
+        profile = ProfileWithPseudocounts(random_motifs)
+    #     Motif ← Profile-randomly generated k-mer in the i-th string
+        check_random = Motifs(profile, Dna, k)
+        if Score(check_random) > Score(best_motifs):
+            best_motifs = check_random
+        else:
+            return best_motifs
+
+# k = 8
+# t = 5
+# N = 100
+#
+# Dna = ["CGCCCCTCTCGGGGGTGTTCAGTAAACGGCCA",
+#     "GGGCGAGGTATGTGTAAGTGCCAAGGTGCCAG",
+#     "TAGTACCGAGACCGAAAGAAGTATACAGGCGT",
+#     "TAGATCAAGTTTCAGGTGCACGTCGGTGAACC",
+#     "AATCCACCAGCTCCACGTGCAATGTTGGCCTA"]
+#
+# print(GibbsSampler(Dna, k, t, N))
