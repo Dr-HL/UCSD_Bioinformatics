@@ -212,8 +212,9 @@ def Normalize(Probabilities):
         Probabilities[key] = value / probability_sum
     return Probabilities
 
-# Probabilities = {'A': 0.1, 'C': 0.1, 'G': 0.1, 'T': 0.1}
-# Normalize(Probabilities)
+
+Probabilities = {'A': 0.15, 'B': 0.6, 'C': 0.225, 'D': 0.225, 'E': 0.3}
+print(Normalize(Probabilities))
 
 """
 This function takes a dictionary Probabilities whose keys are k-mers and whose
