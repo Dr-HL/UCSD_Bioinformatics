@@ -33,23 +33,14 @@ def ProfileMostProbablePattern(Text, k, Profile):
 def CountWithPseudocounts(Motifs):
     t = len(Motifs)
     k = len(Motifs[0])
-    # initializing the count dictionary
     count = {}
-    # for each letter
     for symbol in "ACGT":
-        # each key in the dictionary ("A", "C", "G", "T") will store a list
         count[symbol] = []
-        # loop through each letter within the motif string
         for j in range(k):
-            # create a placeholder for count
             count[symbol].append(1)
-    # for each motif
     for i in range(t):
-        # for each letter in motif
         for j in range(k):
-            # save the current letter into a variable
             symbol = Motifs[i][j]
-            # add to total in count dictionary[current letter][char in motif]
             count[symbol][j] += 1
     return count
 
@@ -152,13 +143,11 @@ def Pr(Text, Profile):
 # print(GreedyMotifSearchWithPseudocounts(Dna, k, t))
 
 # Input:  A profile matrix Profile and a list of strings Dna
-# Output: Profile-most probable 4-mer from each row of Dna
-def Motifs(Profile, Dnas):
-    t = len(Dnas)
-    n = len(Dnas[0])
+# Output: Profile-most probable k-mer from each row of Dna
+def Motifs(Profile, Dna, k):
     probable_kmer = []
-    for Dna in Dnas:
-        probable_kmer.append(ProfileMostProbablePattern(Dna, k, Profile))
+    for each_string in Dna:
+        probable_kmer.append(ProfileMostProbablePattern(each_string, k, Profile))
     return probable_kmer
 
 # Profile = {'A': [0.8, 0.0, 0.0, 0.2],
@@ -173,12 +162,12 @@ def Motifs(Profile, Dnas):
 # Input:  A list of strings Dna, and integers k and t
 # Output: RandomMotifs(Dna, k, t)
 # HINT:   You might not actually need to use t since t = len(Dna), but you may find it convenient
-def RandomMotifs(Dnas, k, t):
-    n = len(Dnas[0])
+def RandomMotifs(Dna, k, t):
+    n = len(Dna[0])
     random_motifs = []
-    for dna in Dnas:
+    for each_string in Dna:
         random_start = random.randint(0,n-k)
-        random_motifs.append(dna[random_start:random_start+k])
+        random_motifs.append(each_string[random_start:random_start+k])
     return random_motifs
 
 # Dnas = ["TTACCTTAAC", "GATGTCTGTC", "ACGGCGTTAG", "CCCTAACGAG", "CGTCAGAGGT"]
@@ -188,24 +177,68 @@ def RandomMotifs(Dnas, k, t):
 
 # Input:  Positive integers k and t, followed by a list of strings Dna
 # Output: return a list of random kmer motifs
-def RandomizedMotifSearch(Dnas, k, t):
-    while True:
-        M = RandomMotifs(Dnas, k, t)
-        BestMotifs = M
-        Profile = ProfileWithPseudocounts(M)
-        M = Motifs(Profile, Dnas)
-        if Score(M) < Score(BestMotifs):
-            BestMotifs = M
-        else:
-            return BestMotifs
+def RandomizedMotifSearch(Dna, k, t):
+    random_motifs = RandomMotifs(Dna, k, t)
+    best_motifs = random_motifs
+    profile = ProfileWithPseudocounts(random_motifs)
+    check_random = Motifs(profile, Dna, k)
+    if Score(check_random) > Score(best_motifs):
+        best_motifs = check_random
+    else:
+        return best_motifs
+#
+# dnas = ["CGCCCCTCTCGGGGGTGTTCAGTAAACGGCCA",
+#     "GGGCGAGGTATGTGTAAGTGCCAAGGTGCCAG",
+#     "TAGTACCGAGACCGAAAGAAGTATACAGGCGT",
+#     "TAGATCAAGTTTCAGGTGCACGTCGGTGAACC",
+#     "AATCCACCAGCTCCACGTGCAATGTTGGCCTA"]
+# k = 8
+# t = 5
+# print(RandomizedMotifSearch(dnas, k, t))
 
+"""
+The function should divide each value in Probabilities by the sum of all values
+in  Probabilities, then return the resulting dictionary
+"""
 
+# Input: A dictionary Probabilities, where keys are k-mers and values are the
+# probabilities of these k-mers (which do not necessarily sum up to 1)
+# Output: A normalized dictionary where the probability of each k-mer was
+# divided by the sum of all k-mers' probabilities
+def Normalize(Probabilities):
+    probability_sum = sum(Probabilities.values())
+    for key, value in sorted(Probabilities.items()):
+        Probabilities[key] = value / probability_sum
+    return Probabilities
 
-Dnas = ["CGCCCCTCTCGGGGGTGTTCAGTAAACGGCCA",
-    "GGGCGAGGTATGTGTAAGTGCCAAGGTGCCAG",
-    "TAGTACCGAGACCGAAAGAAGTATACAGGCGT",
-    "TAGATCAAGTTTCAGGTGCACGTCGGTGAACC",
-    "AATCCACCAGCTCCACGTGCAATGTTGGCCTA"]
-k = 8
-t = 5
-print(RandomizedMotifSearch(Dnas, k, t))
+# Probabilities = {'A': 0.1, 'C': 0.1, 'G': 0.1, 'T': 0.1}
+# Normalize(Probabilities)
+
+"""
+This function takes a dictionary Probabilities whose keys are k-mers and whose
+values are the probabilities of these k-mers. The function should return a
+randomly chosen k-mer key with respect to the values in Probabilities
+"""
+
+# Input:  A dictionary Probabilities whose keys are k-mers and whose values are the probabilities of these kmers
+# Output: A randomly chosen k-mer with respect to the values in Probabilities
+def WeightedDie(Probabilities):
+    random_float = random.uniform(0,1)
+    input_keys = []
+    input_values = []
+    for key, value in sorted(Probabilities.items()):
+        input_keys.append(key)
+        input_values.append(value)
+
+    current = 0
+    range_of_values = []
+    for i, value in enumerate(input_values):
+        current += value
+        range_of_values.append(current)
+
+    for i, value in enumerate(range_of_values):
+        if value >= random_float:
+            return(input_keys[i])
+
+# Probabilities = {'AA': 0.2, 'AT': 0.4, 'CC': 0.1, 'GG': 0.1, 'TT': 0.2}
+# print(WeightedDie(Probabilities))
