@@ -307,7 +307,6 @@ def ApproximatePatternMatching(Pattern, Text, d):
     for position in positions:
         output.append(str(position))
     print(" ".join(output))
-    print(len(output))
     return positions
 
 # Pattern = "CTCGATTCAC"
