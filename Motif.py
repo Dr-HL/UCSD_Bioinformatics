@@ -1,3 +1,4 @@
+import itertools
 """
 For a given choice of Motifs, we can construct a 4 x k (k-mer length) count matrix,
 called Count(Motifs), counting the number of occurrences of each nucleotide in each
@@ -36,7 +37,8 @@ def Count(Motifs):
 # motif3 = "CACCTT"
 # motif4 = "GGATTA"
 # motif5 = "TTCCGG"
-
+# motifs = [motif1, motif2, motif3, motif4, motif5]
+#
 # print(Count(motifs))
 
 """
@@ -210,8 +212,49 @@ def GreedyMotifSearch(Dna, k, t):
         if Score(Motifs) < Score(BestMotifs):
             BestMotifs = Motifs
     return BestMotifs
-
+#
 # k = 3
 # t = 5
 # Dna = ["GGCGTTCAGGCA", "AAGAATCAGTCA", "CAAGGAGTTCGC", "CACGTCAATCAC", "CAATAATATTCG"]
 # print(GreedyMotifSearch(Dna, k, t))
+
+"""
+Given a collection of strings Dna and an integer d, a k-mer is a (k,d)-motif if
+it appears in every string from Dna with at most d mismatches.
+For example, the implanted 15-mer in the strings above represents a (15,4)-motif.
+
+Implanted Motif Problem: Find all (k, d)-motifs in a collection of strings.
+     Input: A collection of strings Dna, and integers k and d.
+     Output: All (k, d)-motifs in Dna.
+"""
+def HammingDistance(p, q):
+    count = 0
+    n = len(p)
+    for i in range(0, n):
+        if p[i] != q[i]:
+            count += 1
+    return count
+
+def MotifEnumeration(Dna, k, d):
+    patterns = []
+    for kmer in itertools.product('ATCG', repeat=k):
+        kmer = ''.join(kmer)
+        accept = True
+        for seq in Dna:
+            found = False
+            for i in range(len(seq)-k+1):
+                if HammingDistance(kmer,seq[i:i+k]) <= d:
+                    found = True
+                    break
+            if not found:
+                accept = False
+                break
+        if accept:
+            patterns.append(kmer)
+    print(" ".join(patterns))
+    return patterns
+
+# k = 5
+# d = 2
+# Dna = ["TGGTAGCGGCCTGTTTACAACTTCA", "CCCCTCTATCTTCAACACTTCTTAC", "ATGATGGTTACGTATACTCGTCCAT", "TGCAAACAGCCAAGAGTTGTAGTTT", "TCCAGAAACTGAAGACGAGATATCG", "CCATCATATCTGCAGGCGAAGTGTA"]
+# MotifEnumeration(Dna, k, d)
