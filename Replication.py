@@ -82,11 +82,9 @@ def FrequentWords(Text, k):
     FrequentPatternsNoDuplicates = RemoveDuplicates(FrequentPatterns)
     return FrequentPatternsNoDuplicates
 
-#Text="ACTTCCTAGCCTACCCAGCACTTCCTAGCCTACCCAGCTACGCGGTCACTTCCTAGCCACTGCTCCACTGCTCCACTGCTCAATGTCCACTACCCAGCAATGTCCACACTGCTCCTACCCAGCAATGTCCACTACCCAGCTACGCGGTCAATGTCCAACTTCCTAGCTACGCGGTCTACGCGGTCTACGCGGTCAATGTCCATACGCGGTCCTACCCAGCCACTGCTCCACTGCTCTACGCGGTCCTACCCAGCTACGCGGTCACTTCCTAGCCTACCCAGCTACGCGGTCCTACCCAGCACTTCCTAGCTACGCGGTCCTACCCAGCTACGCGGTCAATGTCCACTACCCAGCTACGCGGTCTACGCGGTCCTACCCAGCCACTGCTCCTACCCAGCCTACCCAGCACTTCCTAGCACTTCCTAGCACTTCCTAGCCACTGCTCCTACCCAGCACTTCCTAGCTACGCGGTCAATGTCCACACTGCTCTACGCGGTCTACGCGGTCCTACCCAGCTACGCGGTCACTTCCTAGCCTACCCAGCACTTCCTAGCCACTGCTCCACTGCTCTACGCGGTCTACGCGGTCAATGTCCAACTTCCTAGCACTTCCTAGCCTACCCAGCACTTCCTAGCTACGCGGTCTACGCGGTCAATGTCCAACTTCCTAGCCACTGCTCTACGCGGTCACTTCCTAGCACTTCCTAGCAATGTCCACTACCCAGCTACGCGGTCCTACCCAGCCACTGCTCCACTGCTCCTACCCAGCAATGTCCAAATGTCCAACTTCCTAGCAATGTCCATACGCGGTCCACTGCTCAATGTCCATACGCGGTCAATGTCCATACGCGGTCAATGTCCACACTGCTCCTACCCAGCAATGTCCAAATGTCCACACTGCTCTACGCGGTCAATGTCCA"
-#k=13
-#Text = 'TAAACGTGAGAGAAACGTGCTGATTACACTTGTTCGTGTGGTAT'
-#k = 3
-#print(FrequentWords(Text,k))
+# Text = "ACGTTGCATGTCGCATGATGCATGAGAGCT"
+# k = 4
+# print(FrequentWords(Text,k))
 
 """
 input: Pattern - DNA string pattern
@@ -306,7 +304,7 @@ def ApproximatePatternMatching(Pattern, Text, d):
     output = []
     for position in positions:
         output.append(str(position))
-    print(" ".join(output))
+    # print(" ".join(output))
     return positions
 
 # Pattern = "CTCGATTCAC"
@@ -323,3 +321,68 @@ def ApproximatePatternCount(Pattern, Text, d):
 # Text = "AGACAGTTGCCAATCGGCCTGGCCTCACTAACCAGTCCTTAGATATCAGAGAGAGCCTGTGAGAGAATCTGCTGTTGCATGCTACAACTATCTGCTATATCCACCGGCCCTTGACTGTTGCCACTAGATAAACACGTTATGTTATTCCGACCCGACTTAGTTTAGAAGCCCGGAGGCCCTCCGGCTCATACTCTGGAATGGAGTTGTGAGAAAGCCGCGGCTCACTTTGGATGATAAACCTGTGGCGAAGCGCCGCCGCTGAAGAAAATGCCGTTATAATTTCTCTAGGTGAATACCCTCCATTGCCACTACACCCAACGAAACGAAGCGT"
 # d = 3
 # print(ApproximatePatternCount(Pattern, Text, d))
+
+def ApproximatePatternMatching(Pattern, Text, d):
+    # create empty list for result
+    positions = []
+    # determine index value we can stop checking for pattern
+    for i in range(0, len(Text)-len(Pattern)+1):
+        # if we find the pattern within the genome, append starting position of
+        # pattern to positions list
+        if HammingDistance(Text[i:i + len(Pattern)], Pattern) <= d:
+            positions.append(i)
+    positions = sorted(positions)
+    output = []
+    for position in positions:
+        output.append(str(position))
+    # print(" ".join(output))
+    return positions
+
+"""
+Our goal is to generate the d-neighborhood Neighbors(Pattern, d), the set of all
+k-mers whose Hamming distance from Pattern does not exceed d.
+"""
+def neighbors(pattern, d):
+    if d == 0:
+        return [pattern]
+    if len(pattern) == 1:
+        return set(['A', 'C', 'T', 'G'])
+    neighborhood = set()
+    all_neighbors = neighbors(pattern[1:], d)
+    for string in all_neighbors:
+        if HammingDistance(pattern[1:], string) < d:
+            for char in ['A', 'C', 'T', 'G']:
+                neighborhood.add(char + string)
+        else:
+            neighborhood.add(pattern[0] + string)
+    return sorted(list(neighborhood))
+
+"""
+Frequent Words with Mismatches Problem: Find the most frequent k-mers with mismatches in a string.
+     Input: A string Text as well as integers k and d. (You may assume k ≤ 12 and d ≤ 3.)
+     Output: All most frequent k-mers with up to d mismatches in Text.
+"""
+def FrequentWordsWithMismatches(Text, k, d):
+    most_freq_kmers = []
+    counts = {}
+    for i in range(0, len(Text) - k + 1):
+        neighborhood = neighbors(Text[i: i + k], d)
+        for kmer in neighborhood:
+            if kmer not in counts:
+                counts[kmer] = 1
+            else:
+                counts[kmer] += 1
+    best_count = 0
+    for kmer in counts:
+        if counts[kmer] > best_count:
+            most_freq_kmers = [kmer]
+            best_count = counts[kmer]
+        elif counts[kmer] == best_count:
+            most_freq_kmers.append(kmer)
+    print(" ".join(most_freq_kmers))
+    return most_freq_kmers
+
+Text = "CACGCACGTGTGAGTGTGTCAGAAGATGTGTCGAGTGTGAGGAGGAGGTCTGTTGTGAGAGACACGAGATGTGAGAGAGAGGAGTGTGTCAGACACGGAGGAGCACGAGATGTCACGGAGAGAGAGGAGAGAGAGGTCTGTGTCGTCCACGAGATGTGAGAGATGTCACGAGAAGACACGCACGTGTCACGTGTGAGGTCGAGCACGTGTCACGTGTGTCGTCCACGGAGGTCAGATGTGAGTGTGTCAGAAGAGAGTGTTGTGTCCACGAGAAGAGTCTGTGAGCACGCACGGTCTGTGAGGAGAGAGAGGTCGAGTGTAGACACGGAGGAGGTCGAGAGAGTCAGAGTCCACGAGAAGAAGAAGAGAGAGATGTCACGAGA"
+k = 7
+d = 3
+FrequentWordsWithMismatches(Text, k, d)
